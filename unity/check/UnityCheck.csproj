@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <LangVersion>9.0</LangVersion>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <IsPackable>false</IsPackable>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <GoomeSharpDir Condition="'$(GoomeSharpDir)' == ''">$(MSBuildThisFileDirectory)../../../csharp-goome</GoomeSharpDir>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="$(GoomeSharpDir)/tests/UnityStubs/Stubs.cs" />
+    <Compile Include="$(GoomeSharpDir)/unity/com.goome-ui.goome/Runtime/**/*.cs" />
+    <Compile Include="../GoomeSample/Assets/Scripts/*.cs" />
+  </ItemGroup>
+
+</Project>

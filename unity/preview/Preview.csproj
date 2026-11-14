@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <Import Project="../../csharp/goome.props" />
+
+  <ItemGroup>
+    <Compile Include="../GoomeSample/Assets/Scripts/GameHud.cs" />
+  </ItemGroup>
+
+</Project>

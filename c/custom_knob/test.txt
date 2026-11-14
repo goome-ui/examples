@@ -1,0 +1,3 @@
+screen 420x260 1
+3 hover 186,95
+end 6

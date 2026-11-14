@@ -1,0 +1,154 @@
+name: ci
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+  workflow_dispatch:
+
+env:
+  DOTNET_CLI_TELEMETRY_OPTOUT: 1
+  DOTNET_NOLOGO: 1
+
+jobs:
+  c:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest, macos-15-intel]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: build
+        if: runner.os != 'Windows'
+        run: WERROR=1 scripts/build-all.sh c
+      - name: run on the test backend
+        if: runner.os != 'Windows'
+        run: scripts/run-all.sh c
+      - name: build with no warnings (mingw)
+        if: runner.os == 'Windows'
+        shell: bash
+        run: CC=gcc WERROR=1 scripts/build-all.sh c
+      - name: build + run with the powershell scripts
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          Remove-Item -Recurse -Force build
+          ./scripts/build-all.ps1 c
+          ./scripts/run-all.ps1 c
+      - name: build with msvc
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $vs = & "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe" -latest -property installationPath
+          cmd /c "`"$vs\VC\Auxiliary\Build\vcvars64.bat`" && set CC=cl&& pwsh -File scripts\build-all.ps1 c"
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: c-logs-${{ matrix.os }}
+          path: build/run/**/log.txt
+          if-no-files-found: ignore
+
+  csharp:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+      - name: get csharp-goome
+        run: |
+          git clone --depth 1 -b dev https://github.com/goome-ui/csharp-goome.git deps/csharp-goome
+          echo "GoomeSharpDir=$PWD/deps/csharp-goome" >> "$GITHUB_ENV"
+      - name: build c# + unity
+        run: |
+          scripts/build-all.sh csharp
+          scripts/build-all.sh unity
+      - name: run on the test backend
+        run: |
+          scripts/run-all.sh csharp
+          scripts/run-all.sh unity
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: csharp-logs
+          path: build/run/**/log.txt
+          if-no-files-found: ignore
+
+  python:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: install it
+        run: python -m pip install git+https://github.com/goome-ui/python-goome@dev
+      - name: build + run on the test backend
+        run: |
+          scripts/build-all.sh python
+          scripts/run-all.sh python
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: python-logs
+          path: build/run/**/log.txt
+          if-no-files-found: ignore
+
+  native-mods:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: build the mods and test games
+        shell: bash
+        run: CC=gcc bash mods/native/testgame/build.sh
+      - name: load each mod into its test game
+        shell: bash
+        run: RUNNER=native bash mods/native/testgame/run.sh
+
+  native-mods-wine:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: deps
+        run: |
+          sudo dpkg --add-architecture i386
+          sudo apt-get update
+          sudo apt-get install -y gcc-mingw-w64-x86-64 wine wine64 xvfb mesa-vulkan-drivers libgl1-mesa-dri
+      - name: build the mods and test games
+        run: bash mods/native/testgame/build.sh
+      - name: load each mod into its test game under wine
+        run: |
+          export WINEPREFIX="$PWD/.wine" WINEDEBUG=-all
+          wineboot -i >/dev/null 2>&1 || true
+          Xvfb :9 -screen 0 1024x768x24 -nolisten tcp >/dev/null 2>&1 &
+          export DISPLAY=:9 LIBGL_ALWAYS_SOFTWARE=1 GALLIUM_DRIVER=llvmpipe
+          sleep 2
+          RUNNER=wine SKIP=vulkan bash mods/native/testgame/run.sh
+
+  engines:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: deps
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential libsdl2-dev xvfb mesa-utils libgl1-mesa-dri love luajit
+      - name: raylib
+        working-directory: engines/raylib
+        run: |
+          curl -fsSL https://github.com/raysan5/raylib/releases/download/5.5/raylib-5.5_linux_amd64.tar.gz | tar xz
+          cc -std=c99 -O2 -I../../vendor -I../../vendor/backends -Iraylib-5.5_linux_amd64/include main.c ../../vendor/goome.c raylib-5.5_linux_amd64/lib/libraylib.a -lm -lpthread -ldl -o raylib_demo
+      - name: sdl_gl3
+        working-directory: engines/sdl_gl3
+        run: cc -std=c99 -O2 -I../../vendor -I../../vendor/backends main.c ../../vendor/goome.c $(sdl2-config --cflags --libs) -lm -o sdl_demo
+      - name: love2d shared lib
+        working-directory: engines/love2d
+        run: cc -O2 -shared -fPIC -I../../vendor ../../vendor/goome.c -o libgoome.so
+      - name: run them headless
+        run: |
+          export LIBGL_ALWAYS_SOFTWARE=1 GALLIUM_DRIVER=llvmpipe
+          ran() { timeout -s KILL 8 xvfb-run -a "$@"; rc=$?; [ "$rc" = 124 ] || [ "$rc" = 137 ] || [ "$rc" = 0 ]; }
+          ( cd engines/raylib && ran ./raylib_demo ) && echo "raylib ran"
+          ( cd engines/sdl_gl3 && ran ./sdl_demo ) && echo "sdl ran"
+          ( cd engines/love2d && ran love . ) && echo "love ran"

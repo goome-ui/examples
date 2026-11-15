@@ -1,0 +1,7 @@
+screen 1280x720 1
+4 click 278,104
+8 hotkey alt+shift+n
+10 hotkey alt+shift+m
+14 click 600,330
+15 key buy oat milk\nand coffee
+end 24

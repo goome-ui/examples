@@ -1,0 +1,21 @@
+<Project>
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <RollForward>Major</RollForward>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <IsPackable>false</IsPackable>
+    <GoomeSharpDir Condition="'$(GoomeSharpDir)' == ''">$(MSBuildThisFileDirectory)../../csharp-goome</GoomeSharpDir>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(GoomeFromNuget)' != 'true'">
+    <ProjectReference Include="$(GoomeSharpDir)/src/GoomeSharp/GoomeSharp.csproj" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(GoomeFromNuget)' == 'true'">
+    <PackageReference Include="GoomeSharp" Version="0.4.0" />
+  </ItemGroup>
+
+</Project>

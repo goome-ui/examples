@@ -1,0 +1,4 @@
+screen 220x220 1
+2 click 110,150
+3 click 110,150
+end 6

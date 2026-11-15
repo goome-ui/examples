@@ -1,0 +1,6 @@
+screen 720x480 1
+2 click 200,48
+3 key Osaka
+5 click 440,83
+6 click 440,83
+end 9

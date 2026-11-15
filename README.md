@@ -9,8 +9,8 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/C-6fdc5f?style=flat-square&logo=c&logoColor=1b1d22&labelColor=6fdc5f" alt="C">
-  <img src="https://img.shields.io/badge/C%23-.NET%208-1b1d22?style=flat-square&labelColor=6fdc5f" alt="C#">
+  <img src="https://goome-ui.github.io/docs/assets/badges/c.svg" alt="C">
+  <img src="https://goome-ui.github.io/docs/assets/badges/csharp-net8.svg" alt="C#">
   <img src="https://img.shields.io/badge/Python-3-1b1d22?style=flat-square&logo=python&logoColor=white" alt="Python">
   <img src="https://img.shields.io/badge/Linux-X11%20%2B%20Wayland-1b1d22?style=flat-square&logo=linux&logoColor=white" alt="Linux">
   <img src="https://img.shields.io/badge/Windows-10%20%2F%2011-1b1d22?style=flat-square&logo=windows11&logoColor=white" alt="Windows">

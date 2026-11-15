@@ -1,0 +1,69 @@
+name: pr rules
+
+on:
+  pull_request_target:
+    types: [opened, reopened, synchronize, edited]
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
+jobs:
+  check:
+    if: >-
+      github.event.pull_request.state == 'open' &&
+      github.event.pull_request.author_association != 'OWNER' &&
+      github.event.pull_request.author_association != 'MEMBER'
+    runs-on: ubuntu-latest
+    steps:
+      - env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          PR: ${{ github.event.pull_request.number }}
+          BASE: ${{ github.event.pull_request.base.ref }}
+        run: |
+          why=""
+          if [ "$BASE" != "dev" ]; then
+            why="PRs go to the dev branch, this one is against $BASE."
+          fi
+          gh api "repos/$REPO/pulls/$PR/files?per_page=100" --paginate \
+            --jq '.[] | [.filename, .status, (.previous_filename // "")] | @tsv' > files.tsv
+          names=$(cut -f1,3 files.tsv | tr '\t' '\n' | sed '/^$/d')
+          if printf '%s\n' "$names" | grep -q '^\.github/'; then
+            why="$why It changes something in .github/, thats CI and these rules so only I change those."
+          fi
+          if printf '%s\n' "$names" | grep -q '^scripts/'; then
+            why="$why It changes something in scripts/, those run on peoples computers so only I touch them."
+          fi
+          if printf '%s\n' "$names" | grep -qx 'LICENSE'; then
+            why="$why It changes the LICENSE, thats not something a PR changes."
+          fi
+          if printf '%s\n' "$names" | grep -q '^vendor/'; then
+            why="$why It changes the goome copy in vendor/ (goome.h or backends/), that only gets updated from c-goome with tools/update_goome.sh."
+          fi
+          if printf '%s\n' "$names" | grep -qE '^mods/native/(common/|build\.sh|[^/]+/build\.sh|testgame/(build|run)\.sh)'; then
+            why="$why It changes a native mod build script or the shared mod code in mods/native/, those build and inject a DLL so only I touch them."
+          fi
+          bins=$(printf '%s\n' "$names" | grep -iE '\.(exe|dll|so|dylib|a|lib|o|obj|pdb|nupkg|whl|jar|zip|7z|tar|gz|rar|bin)$' || true)
+          if [ -n "$bins" ]; then
+            why="$why It adds binaries or prebuilt libs ($(echo $bins | tr '\n' ' ')), examples have to build from source."
+          fi
+          big=""
+          while IFS=$'\t' read -r name status prev; do
+            [ "$status" = removed ] && continue
+            size=$(gh api "repos/$REPO/contents/$(printf '%s' "$name" | jq -sRr @uri | sed 's/%2F/\//g')?ref=refs/pull/$PR/head" --jq .size 2>/dev/null || echo 0)
+            if [ "${size:-0}" -gt 1048576 ]; then big="$big $name"; fi
+          done < files.tsv
+          if [ -n "$big" ]; then
+            why="$why It adds files over 1 MB ($big ), keep examples and screenshots small."
+          fi
+          if [ -z "$why" ]; then
+            echo "follows the rules"
+            exit 0
+          fi
+          gh api "repos/$REPO/labels" -f name=rules-closed -f color=b60205 -f description="closed by the pr rules" >/dev/null 2>&1 || true
+          gh api "repos/$REPO/issues/$PR/comments" -f body="Closed automatically, sorry. $why Check [CONTRIBUTING.md](https://github.com/goome-ui/examples/blob/dev/CONTRIBUTING.md), fix it and open a new PR against dev." >/dev/null
+          gh api "repos/$REPO/issues/$PR/labels" -f "labels[]=rules-closed" >/dev/null
+          gh api -X PATCH "repos/$REPO/pulls/$PR" -f state=closed >/dev/null
+          echo "closed: $why"

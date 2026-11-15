@@ -1,0 +1,4 @@
+screen 640x360 1
+2 hotkey alt+up
+3 hotkey alt+up
+end 6

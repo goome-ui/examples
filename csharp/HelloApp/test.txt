@@ -1,0 +1,5 @@
+screen 520x340 1
+2 click 200,145
+3 key Sam
+4 click 47,187
+end 7

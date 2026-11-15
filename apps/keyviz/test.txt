@@ -1,0 +1,9 @@
+screen 1280x720 1
+2 hotkey alt+shift+k
+4 key goome is neat
+10 hotkey ctrl+shift+t
+12 hotkey ctrl+shift+t
+16 hotkey ctrl+s
+18 hold 140,205 24
+shot 20
+end 28

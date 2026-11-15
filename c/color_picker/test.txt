@@ -1,0 +1,4 @@
+screen 640x360 1
+1 hover 252,124
+3 hotkey alt+p
+end 6

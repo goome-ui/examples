@@ -1,0 +1,5 @@
+screen 460x520 1
+2 click 150,32
+3 key call grandma\n
+5 click 40,150
+end 12

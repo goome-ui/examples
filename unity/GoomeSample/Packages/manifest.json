@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "com.goome-ui.goome": "https://github.com/goome-ui/csharp-goome.git?path=/unity/com.goome-ui.goome",
+    "com.unity.ugui": "1.0.0",
+    "com.unity.modules.imgui": "1.0.0",
+    "com.unity.modules.physics": "1.0.0",
+    "com.unity.modules.ui": "1.0.0"
+  }
+}

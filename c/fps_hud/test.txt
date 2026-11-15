@@ -1,0 +1,3 @@
+screen 640x360 1
+1 hotkey alt+f
+end 40

@@ -1,0 +1,7 @@
+screen 640x360 1
+2 hotkey alt+s
+4 hold 140,90 9
+5 hover 260,160
+7 hover 380,230
+shot 8
+end 12

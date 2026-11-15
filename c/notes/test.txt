@@ -1,0 +1,5 @@
+screen 760x480 1
+2 click 60,52
+3 click 300,200
+4 key \nfish sauce
+end 8

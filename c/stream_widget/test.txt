@@ -1,0 +1,4 @@
+screen 960x540 1
+1 send song Lighthouse - The Harbor Band
+2 send follow Sam
+end 14

@@ -1,0 +1,3 @@
+screen 720x500 1
+2 drop 360,250 ../../../../c/offscreen_png/shot.png
+end 6

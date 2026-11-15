@@ -1,0 +1,45 @@
+name: release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+      TAG: ${{ github.ref_name }}
+    steps:
+      - name: make the release
+        run: gh release view "$TAG" > /dev/null 2>&1 || gh release create "$TAG" --verify-tag --title "goome ${TAG#v}" --notes "goome ${TAG#v}. The examples for that version of goome, the code is in the source zip."
+
+  apps:
+    needs: release
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-22.04
+            label: linux-x86_64
+          - os: windows-latest
+            label: windows-x86_64
+          - os: macos-latest
+            label: macos-universal
+    runs-on: ${{ matrix.os }}
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+      TAG: ${{ github.ref_name }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: build, check and zip the apps
+        shell: bash
+        run: scripts/package-apps.sh ${{ matrix.label }}
+      - name: attach them to the release
+        shell: bash
+        run: gh release upload "$TAG" build/dist/*.zip --clobber

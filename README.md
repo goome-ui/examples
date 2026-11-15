@@ -370,12 +370,6 @@ If youve got a small example that shows off something goome can do, make a pull 
 
 </details>
 
-<p align="center">
-<b>🫶 Contributors 🫶</b><br>
-Thanks to everyone who helped out!<br> <br>
-<a href="https://github.com/goome-ui/examples/graphs/contributors"><img src="https://contrib.rocks/image?repo=goome-ui/examples" alt="contributors"></a>
-</p>
-
 <details>
 <summary align="center"><b>⚖️ License ⚖️</b></summary>
 
@@ -405,3 +399,9 @@ In short: play fair, keep it open, and give credit where it's due.
 </p>
 
 </details>
+
+<p align="center">
+<b>🫶 Contributors 🫶</b><br>
+Thanks to everyone who helped out!<br> <br>
+<a href="https://github.com/goome-ui/examples/graphs/contributors"><img src="https://contrib.rocks/image?repo=goome-ui/examples" alt="contributors"></a>
+</p>

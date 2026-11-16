@@ -331,7 +331,7 @@ scripts/run-all.sh
 </p>
 
 ```sh
-git clone -b v0.4.0 https://github.com/goome-ui/examples
+git clone -b v0.5.0 https://github.com/goome-ui/examples
 ```
 
 <p align="center">

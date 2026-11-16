@@ -12,7 +12,7 @@ A pomodoro timer that stays on top, with the ring drawn on a Canvas.
 <summary align="center"><b>🛠 Build And Run 🛠</b></summary>
 
 ```sh
-pip install git+https://github.com/goome-ui/python-goome@dev
+pip install goome
 python timer.py
 ```
 </details>

@@ -20,7 +20,7 @@ A loupe that follows the mouse and shows the hex color under it.
 <summary align="center"><b>🛠 Build And Run 🛠</b></summary>
 
 ```sh
-pip install git+https://github.com/goome-ui/python-goome@dev
+pip install goome
 python color_picker.py
 ```
 </details>

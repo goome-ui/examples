@@ -12,7 +12,7 @@ A normal app window with <code>goome.App</code>. Put a function under <code>@app
 <summary align="center"><b>🛠 Build And Run 🛠</b></summary>
 
 ```sh
-pip install git+https://github.com/goome-ui/python-goome@dev
+pip install goome
 python hello_app.py
 ```
 </details>

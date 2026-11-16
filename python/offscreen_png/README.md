@@ -12,7 +12,7 @@ No window, the ui gets drawn into memory and saved as <code>offscreen.png</code>
 <summary align="center"><b>🛠 Build And Run 🛠</b></summary>
 
 ```sh
-pip install git+https://github.com/goome-ui/python-goome@dev
+pip install goome
 python offscreen_png.py
 ```
 </details>

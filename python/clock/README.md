@@ -20,7 +20,7 @@ A clock card in the top right corner of the screen that never takes a click.
 <summary align="center"><b>🛠 Build And Run 🛠</b></summary>
 
 ```sh
-pip install git+https://github.com/goome-ui/python-goome@dev
+pip install goome
 python clock.py
 ```
 </details>

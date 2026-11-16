@@ -22,7 +22,7 @@ A crosshair in the middle of the screen, clicks go straight through to the game.
 <summary align="center"><b>🛠 Build And Run 🛠</b></summary>
 
 ```sh
-pip install git+https://github.com/goome-ui/python-goome@dev
+pip install goome
 python crosshair.py
 ```
 </details>

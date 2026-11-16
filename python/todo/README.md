@@ -21,7 +21,7 @@ A todo list on <code>goome.App</code> that saves to <code>todo.txt</code>.
 <summary align="center"><b>🛠 Build And Run 🛠</b></summary>
 
 ```sh
-pip install git+https://github.com/goome-ui/python-goome@dev
+pip install goome
 python todo.py
 ```
 </details>

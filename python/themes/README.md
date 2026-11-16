@@ -12,7 +12,7 @@ Theme presets, a theme made from one accent color, and scaling the whole ui, wit
 <summary align="center"><b>🛠 Build And Run 🛠</b></summary>
 
 ```sh
-pip install git+https://github.com/goome-ui/python-goome@dev
+pip install goome
 python themes.py
 ```
 </details>

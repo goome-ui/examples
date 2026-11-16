@@ -20,7 +20,7 @@ The smallest overlay in Python. A little window on top of everything, clicks nex
 <summary align="center"><b>🛠 Build And Run 🛠</b></summary>
 
 ```sh
-pip install git+https://github.com/goome-ui/python-goome@dev
+pip install goome
 python hello_overlay.py
 ```
 </details>

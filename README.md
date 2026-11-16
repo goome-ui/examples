@@ -258,7 +258,7 @@ Each one is a tiny .NET 8 project. They use the GoomeSharp project from a <a hre
 <br>
 
 <p align="center">
-One script each. <code>pip install git+https://github.com/goome-ui/python-goome</code> once, then <code>python &lt;name&gt;.py</code>.
+One script each. <code>pip install goome</code> once, then <code>python &lt;name&gt;.py</code>.
 </p>
 
 | | Example | What it is |

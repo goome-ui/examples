@@ -12,17 +12,17 @@ typedef struct {
 #if defined(_WIN32)
 static const app apps[] = {
     {"Terminal", "start \"\" cmd"}, {"Files", "start \"\" explorer"}, {"Notepad", "start \"\" notepad"},
-    {"Calculator", "start \"\" calc"}, {"Paint", "start \"\" mspaint"}, {"goome docs", "start \"\" https://goome-ui.github.io/docs/"},
+    {"Calculator", "start \"\" calc"}, {"Paint", "start \"\" mspaint"}, {"goome docs", "start \"\" https://goome.wtf/docs/"},
 };
 #elif defined(__APPLE__)
 static const app apps[] = {
     {"Terminal", "open -a Terminal"}, {"Files", "open ~"}, {"TextEdit", "open -a TextEdit"},
-    {"Calculator", "open -a Calculator"}, {"Activity Monitor", "open -a 'Activity Monitor'"}, {"goome docs", "open https://goome-ui.github.io/docs/"},
+    {"Calculator", "open -a Calculator"}, {"Activity Monitor", "open -a 'Activity Monitor'"}, {"goome docs", "open https://goome.wtf/docs/"},
 };
 #else
 static const app apps[] = {
     {"Terminal", "x-terminal-emulator &"}, {"Files", "xdg-open ~ &"}, {"Text editor", "xdg-open ~/notes.txt &"},
-    {"Calculator", "gnome-calculator &"}, {"System monitor", "gnome-system-monitor &"}, {"goome docs", "xdg-open https://goome-ui.github.io/docs/ &"},
+    {"Calculator", "gnome-calculator &"}, {"System monitor", "gnome-system-monitor &"}, {"goome docs", "xdg-open https://goome.wtf/docs/ &"},
 };
 #endif
 #define NAPPS (int)(sizeof(apps) / sizeof(apps[0]))

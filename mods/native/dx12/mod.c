@@ -40,7 +40,11 @@ static int ready;
 
 static void WINAPI my_exec(ID3D12CommandQueue *q, UINT n, ID3D12CommandList *const *lists)
 {
-    if (!queue && n) queue = q;
+    if (!queue && n) {
+        D3D12_COMMAND_QUEUE_DESC qd;
+        q->lpVtbl->GetDesc(q, &qd);
+        if (qd.Type == D3D12_COMMAND_LIST_TYPE_DIRECT) queue = q;
+    }
     real_exec(q, n, lists);
 }
 

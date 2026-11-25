@@ -38,6 +38,7 @@ static LRESULT CALLBACK goome_mod_proc(HWND h, UINT msg, WPARAM w, LPARAM l)
 static void goome_mod_subclass(HWND win)
 {
     if (gmod.win == win) return;
+    if (gmod.win && gmod.orig) SetWindowLongPtrW(gmod.win, GWLP_WNDPROC, (LONG_PTR)gmod.orig);
     gmod.win = win;
     goome_win32_init(gmod.g, win);
     goome_win32_set_ui(gmod.g, gmod.u);

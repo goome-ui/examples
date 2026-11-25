@@ -134,7 +134,7 @@ static int build_sw(VkSwapchainKHR handle)
 static void overlay(VkQueue q, const VkPresentInfoKHR *info, uint32_t i, VkSemaphore *out)
 {
     uint32_t img = info->pImageIndices[i];
-    if (img >= sw.n) return;
+    if (img >= sw.n || info->waitSemaphoreCount > 16) return;
     vk.ResetCommandBuffer(sw.cbs[img], 0);
     VkCommandBufferBeginInfo bi = {VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO, NULL, VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT, NULL};
     vk.BeginCommandBuffer(sw.cbs[img], &bi);
@@ -147,11 +147,12 @@ static void overlay(VkQueue q, const VkPresentInfoKHR *info, uint32_t i, VkSemap
     goome_vulkan_render(gmod.g, sw.cbs[img]);
     vk.CmdEndRenderPass(sw.cbs[img]);
     vk.EndCommandBuffer(sw.cbs[img]);
-    VkPipelineStageFlags wait = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+    VkPipelineStageFlags wait[16];
+    for (uint32_t k = 0; k < 16; k++) wait[k] = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
     VkSubmitInfo si;
     memset(&si, 0, sizeof(si));
     si.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
-    si.waitSemaphoreCount = info->waitSemaphoreCount, si.pWaitSemaphores = info->pWaitSemaphores, si.pWaitDstStageMask = &wait;
+    si.waitSemaphoreCount = info->waitSemaphoreCount, si.pWaitSemaphores = info->pWaitSemaphores, si.pWaitDstStageMask = wait;
     si.commandBufferCount = 1, si.pCommandBuffers = &sw.cbs[img];
     si.signalSemaphoreCount = 1, si.pSignalSemaphores = &sw.sems[img];
     if (vk.QueueSubmit(q, 1, &si, VK_NULL_HANDLE) == VK_SUCCESS) *out = sw.sems[img];

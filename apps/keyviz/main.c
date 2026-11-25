@@ -625,7 +625,7 @@ int main(int argc, char **argv)
 
     goome_monitor mons[MAX_MONS];
     int nmons = goome_monitors(g, mons, MAX_MONS);
-    if (p.mon >= nmons) p.mon = 0;
+    if (p.mon < 0 || p.mon >= nmons) p.mon = 0;
     mods m = {{0}, 0};
     int settings = 0, running = 1, buttons = 0, scroll = 0, prefs_dirty = 0, drawn = 1;
     long mouse_at = -100000, status_until = status[0] ? goome_now_ms() + 12000 : 0;
@@ -639,7 +639,7 @@ int main(int argc, char **argv)
             if (ev.type == GOOME_QUIT) running = 0;
             if (ev.type == GOOME_MONITORS) {
                 nmons = goome_monitors(g, mons, MAX_MONS);
-                if (p.mon >= nmons) p.mon = 0;
+                if (p.mon < 0 || p.mon >= nmons) p.mon = 0;
             }
             if ((ev.type == GOOME_HOTKEY && ev.id == HOTKEY_SETTINGS) || (ev.type == GOOME_CONTROL && !strcmp(ev.msg, "settings"))) settings = !settings;
             if ((ev.type == GOOME_HOTKEY && ev.id == HOTKEY_PAUSE) || (ev.type == GOOME_CONTROL && !strcmp(ev.msg, "pause"))) p.paused = !p.paused;

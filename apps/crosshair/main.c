@@ -190,7 +190,7 @@ int main(int argc, char **argv)
 
     goome_monitor mons[MAX_MONS];
     int nmons = goome_monitors(g, mons, MAX_MONS);
-    if (x.mon >= nmons) x.mon = 0;
+    if (x.mon < 0 || x.mon >= nmons) x.mon = 0;
     int settings = first_run || !x.shown, drawn_mon = x.mon, running = 1, dirty = 1, pending_save = 0;
     double wx = 0, wy = 0, ww = 340, wh = 0;
     if (nmons > 0) wx = mons[x.mon].area.x + 60, wy = mons[x.mon].area.y + 60;
@@ -204,7 +204,7 @@ int main(int argc, char **argv)
             if (ev.type == GOOME_QUIT) running = 0;
             if (ev.type == GOOME_MONITORS) {
                 nmons = goome_monitors(g, mons, MAX_MONS);
-                if (x.mon >= nmons) x.mon = 0;
+                if (x.mon < 0 || x.mon >= nmons) x.mon = 0;
             }
             if ((ev.type == GOOME_HOTKEY && ev.id == HOTKEY_SHOW) || (ev.type == GOOME_CONTROL && !strcmp(ev.msg, "toggle"))) x.shown = !x.shown, pending_save = 1;
             if ((ev.type == GOOME_HOTKEY && ev.id == HOTKEY_SETTINGS) || (ev.type == GOOME_CONTROL && !strcmp(ev.msg, "settings"))) settings = !settings;
